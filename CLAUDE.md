@@ -21,7 +21,7 @@ Bids are stored in a database and visible on a personal bids page per email addr
 |------------|-----------------------------------|
 | Frontend   | HTML5, CSS3, Vanilla JavaScript   |
 | Backend    | PHP 8 (plain, no framework)       |
-| Database   | MariaDB / MySQL                   |
+| Database   | MySQL                             |
 | Hosting    | School FTP server (no CLI access) |
 | Editor     | Visual Studio Code                |
 | Versioning | GitHub                            |
