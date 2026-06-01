@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!-- LET OP: dit is een statische voorvertoning om de vormgeving te bekijken zonder
+     PHP/MySQL. Het is GEEN onderdeel van de echte site en kan verwijderd worden.
+     De echte pagina's zijn de .php-bestanden, die je via XAMPP draait. -->
+<html lang="nl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voorvertoning — Wealth Creators</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container site-header__inner">
+            <a class="brand" href="#">
+                <span class="brand__name">Wealth Creators</span>
+                <span class="brand__tagline">Marktplaats voor de $up&euro;r Rich</span>
+            </a>
+            <button class="nav-toggle" aria-label="Menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <nav class="site-nav">
+                <a href="#" class="is-active">Home</a>
+                <a href="#">Overzicht</a>
+                <a href="#">Mijn biedingen</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="site-main">
+        <section class="hero">
+            <div class="container hero__content">
+                <span class="eyebrow">Marktplaats voor de $up&euro;r Rich</span>
+                <h1>Bezit het <em>onbereikbare</em>.</h1>
+                <p>Een zorgvuldig samengestelde collectie supercars, jachten, helikopters en
+                   tijdloze juwelen. Voor wie alleen het beste verdient.</p>
+                <div class="hero__actions">
+                    <a href="#" class="btn btn--primary">Ontdek de collectie</a>
+                    <a href="#categorieen" class="btn btn--ghost">Bekijk categorie&euml;n</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="categorieen">
+            <div class="container">
+                <div class="section__head">
+                    <span class="eyebrow">Categorie&euml;n</span>
+                    <h2>Verken per categorie</h2>
+                    <p>Van hypercars tot zeldzame diamanten &mdash; elk object met een verhaal.</p>
+                </div>
+                <div class="grid grid--categories">
+                    <a class="category-card" href="#"><img src="https://picsum.photos/seed/supercars/800/600" alt="Supercars"><div class="category-card__overlay"><h3>Supercars</h3></div></a>
+                    <a class="category-card" href="#"><img src="https://picsum.photos/seed/jachten/800/600" alt="Jachten"><div class="category-card__overlay"><h3>Jachten</h3></div></a>
+                    <a class="category-card" href="#"><img src="https://picsum.photos/seed/helikopters/800/600" alt="Helikopters"><div class="category-card__overlay"><h3>Helikopters</h3></div></a>
+                    <a class="category-card" href="#"><img src="https://picsum.photos/seed/horloges/800/600" alt="Horloges"><div class="category-card__overlay"><h3>Horloges</h3></div></a>
+                    <a class="category-card" href="#"><img src="https://picsum.photos/seed/juwelen/800/600" alt="Juwelen"><div class="category-card__overlay"><h3>Juwelen</h3></div></a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" style="padding-top: 0;">
+            <div class="container">
+                <div class="section__head">
+                    <span class="eyebrow">Uitgelicht</span>
+                    <h2>Recent toegevoegd</h2>
+                    <p>Een greep uit de nieuwste objecten in de collectie.</p>
+                </div>
+                <div class="grid grid--products">
+                    <a class="product-card" href="#"><div class="product-card__media"><img src="https://picsum.photos/seed/bugatti1/1200/800" alt="Bugatti"></div><div class="product-card__body"><span class="product-card__cat">Supercars</span><h3 class="product-card__title">Bugatti La Voiture Noire</h3><span class="product-card__meta">Monaco</span><span class="product-card__price">&euro; 11.000.000</span></div></a>
+                    <a class="product-card" href="#"><div class="product-card__media"><img src="https://picsum.photos/seed/pagani1/1200/800" alt="Pagani"></div><div class="product-card__body"><span class="product-card__cat">Supercars</span><h3 class="product-card__title">Pagani Huayra Roadster BC</h3><span class="product-card__meta">Milaan</span><span class="product-card__price">&euro; 3.800.000</span></div></a>
+                    <a class="product-card" href="#"><div class="product-card__media"><img src="https://picsum.photos/seed/sunreef1/1200/800" alt="Sunreef"></div><div class="product-card__body"><span class="product-card__cat">Jachten</span><h3 class="product-card__title">Sunreef 80 Eco</h3><span class="product-card__meta">Saint-Tropez</span><span class="product-card__price">&euro; 9.500.000</span></div></a>
+                    <a class="product-card" href="#"><div class="product-card__media"><img src="https://picsum.photos/seed/airbus1/1200/800" alt="Airbus"></div><div class="product-card__body"><span class="product-card__cat">Helikopters</span><h3 class="product-card__title">Airbus ACH160</h3><span class="product-card__meta">Gen&egrave;ve</span><span class="product-card__price">&euro; 16.000.000</span></div></a>
+                    <a class="product-card" href="#"><div class="product-card__media"><img src="https://picsum.photos/seed/patek1/1200/800" alt="Patek"></div><div class="product-card__body"><span class="product-card__cat">Horloges</span><h3 class="product-card__title">Patek Philippe Grandmaster Chime</h3><span class="product-card__meta">Gen&egrave;ve</span><span class="product-card__price">&euro; 2.700.000</span></div></a>
+                    <a class="product-card" href="#"><div class="product-card__media"><img src="https://picsum.photos/seed/diamond1/1200/800" alt="Diamond"></div><div class="product-card__body"><span class="product-card__cat">Juwelen</span><h3 class="product-card__title">The Blue Heart Diamond</h3><span class="product-card__meta">Antwerpen</span><span class="product-card__price">&euro; 23.000.000</span></div></a>
+                </div>
+                <div style="text-align: center; margin-top: 48px;">
+                    <a href="#" class="btn btn--ghost">Bekijk alle producten</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container site-footer__inner">
+            <div class="site-footer__brand">
+                <span class="brand__name">Wealth Creators</span>
+                <p>Exclusieve objecten voor wie het beste verdient.</p>
+            </div>
+            <nav class="site-footer__nav">
+                <a href="#">Home</a>
+                <a href="#">Overzicht</a>
+                <a href="#">Mijn biedingen</a>
+            </nav>
+            <p class="site-footer__copy">&copy; 2026 Wealth Creators &middot; Projectnummer 2023#004</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

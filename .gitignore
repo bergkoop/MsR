@@ -1,0 +1,15 @@
+# Gevoelige configuratie — nooit committen
+config.php
+
+# Editor / IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# OS-bestanden
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
