@@ -21,16 +21,23 @@ function redirect_terug($product_id, $status, $naam = '', $email = '') {
     exit;
 }
 
+// Alleen ingelogde gebruikers mogen bieden.
+vereis_login();
+
 // Alleen POST-aanvragen zijn toegestaan.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: index.php');
     exit;
 }
 
-// Lees en normaliseer de invoer.
+// Haal de naam en het e-mailadres uit het account — vertrouw POST niet voor deze velden.
+$ingelogde    = huidige_gebruiker();
+$gebruiker_id = (int) $ingelogde['id'];
+$naam         = $ingelogde['naam'];
+$email        = $ingelogde['email'];
+
+// Lees en normaliseer de overige invoer.
 $product_id = isset($_POST['product_id']) ? (int) $_POST['product_id'] : 0;
-$naam       = isset($_POST['naam']) ? trim($_POST['naam']) : '';
-$email      = isset($_POST['email']) ? trim($_POST['email']) : '';
 $bericht    = isset($_POST['bericht']) ? trim($_POST['bericht']) : '';
 // Komma's toestaan als decimaalteken voor het bedrag.
 $bod_ruw    = isset($_POST['bod_bedrag']) ? str_replace(',', '.', trim($_POST['bod_bedrag'])) : '';
@@ -42,15 +49,9 @@ if ($product_id < 1) {
     exit;
 }
 
-// Serverkant-validatie van alle velden (zelfde regels als in main.js).
+// Serverkant-validatie van de velden die de gebruiker zelf invult.
 $fouten = array();
 
-if (mb_strlen($naam) < 2 || mb_strlen($naam) > 100) {
-    $fouten[] = 'naam';
-}
-if (!filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 150) {
-    $fouten[] = 'email';
-}
 if (mb_strlen($bericht) < 10) {
     $fouten[] = 'bericht';
 }
@@ -84,11 +85,11 @@ if ($bod_bedrag < $minimaal_bod) {
     redirect_terug($product_id, 'te-laag', $naam, $email);
 }
 
-// Sla het bod op via een prepared statement.
+// Sla het bod op via een prepared statement, inclusief de gebruiker_id.
 $stmt = mysqli_prepare($conn,
-    'INSERT INTO biedingen (product_id, naam, email, bod_bedrag, bericht)
-     VALUES (?, ?, ?, ?, ?)');
-mysqli_stmt_bind_param($stmt, 'issds', $product_id, $naam, $email, $bod_bedrag, $bericht);
+    'INSERT INTO biedingen (product_id, gebruiker_id, naam, email, bod_bedrag, bericht)
+     VALUES (?, ?, ?, ?, ?, ?)');
+mysqli_stmt_bind_param($stmt, 'iissds', $product_id, $gebruiker_id, $naam, $email, $bod_bedrag, $bericht);
 $ok = mysqli_stmt_execute($stmt);
 mysqli_stmt_close($stmt);
 

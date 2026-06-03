@@ -707,6 +707,78 @@ h1, h2, h3, h4 {
     border-top: 1px solid var(--border);
 }
 
+/* ----- Navigatie: authenticatiestatus ----- */
+
+/* Welkomsttekst in de nav voor ingelogde gebruikers */
+.nav__greeting {
+    font-size: 0.85rem;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+}
+
+/* Uitlog-link ziet er hetzelfde uit als andere nav-links */
+.nav__logout {
+    font-size: 0.9rem;
+    color: var(--highlight);
+    letter-spacing: 0.04em;
+    padding: 6px 0;
+    position: relative;
+    transition: color var(--transition);
+}
+
+.nav__logout::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background: var(--accent);
+    transition: width var(--transition);
+}
+
+.nav__logout:hover {
+    color: var(--text);
+}
+
+.nav__logout:hover::after {
+    width: 100%;
+}
+
+/* Registreren-knop in de nav: iets kleiner dan de normale .btn */
+.btn--nav {
+    padding: 8px 20px;
+    font-size: 0.85rem;
+}
+
+/* ----- Login-gate op de showcasepagina ----- */
+.login-gate {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 48px 40px;
+    text-align: center;
+}
+
+.login-gate h3 {
+    font-family: var(--font-head);
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+}
+
+.login-gate p {
+    color: var(--muted);
+    margin-bottom: 28px;
+}
+
+.login-gate__actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 /* ----- Responsief: mobiel = één kolom ----- */
 @media (max-width: 860px) {
     .showcase {

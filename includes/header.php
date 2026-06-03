@@ -36,7 +36,16 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <nav class="site-nav">
                 <a href="index.php" class="<?php echo $current_page === 'index.php' ? 'is-active' : ''; ?>">Home</a>
                 <a href="overzicht.php" class="<?php echo $current_page === 'overzicht.php' ? 'is-active' : ''; ?>">Overzicht</a>
-                <a href="berichten.php" class="<?php echo $current_page === 'berichten.php' ? 'is-active' : ''; ?>">Mijn biedingen</a>
+
+                <?php if (is_ingelogd()): ?>
+                    <?php $nav_gebruiker = huidige_gebruiker(); ?>
+                    <a href="berichten.php" class="<?php echo $current_page === 'berichten.php' ? 'is-active' : ''; ?>">Mijn biedingen</a>
+                    <span class="nav__greeting">Welkom, <?php echo htmlspecialchars($nav_gebruiker['naam']); ?></span>
+                    <a href="uitloggen.php" class="nav__logout">Uitloggen</a>
+                <?php else: ?>
+                    <a href="inloggen.php" class="<?php echo $current_page === 'inloggen.php' ? 'is-active' : ''; ?>">Inloggen</a>
+                    <a href="registreren.php" class="btn btn--primary btn--nav <?php echo $current_page === 'registreren.php' ? 'is-active' : ''; ?>">Registreren</a>
+                <?php endif; ?>
             </nav>
         </div>
     </header>

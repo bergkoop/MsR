@@ -1,31 +1,30 @@
 <?php
 // Wealth Creators — "Mijn biedingen"
-// Bezoekers zoeken hun eigen biedingen op via hun e-mailadres (geen login nodig).
+// Toont de biedingen van de ingelogde gebruiker. Vereist een account.
 
 require_once __DIR__ . '/config.php';
 
-$email = isset($_GET['email']) ? trim($_GET['email']) : '';
-$gezocht = ($email !== '');
-$geldig_email = filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+// Alleen ingelogde gebruikers mogen hun biedingen zien.
+vereis_login('berichten.php');
+
+$ingelogde = huidige_gebruiker();
 $biedingen = array();
 
-// Alleen zoeken wanneer er een geldig e-mailadres is opgegeven.
-if ($gezocht && $geldig_email) {
-    $sql = 'SELECT b.bod_bedrag, b.bericht, b.aangemaakt_op, b.status,
-                   p.id AS product_id, p.naam AS product_naam
-              FROM biedingen b
-              JOIN producten p ON p.id = b.product_id
-             WHERE b.email = ?
-             ORDER BY b.aangemaakt_op DESC';
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, 's', $email);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    while ($row = mysqli_fetch_assoc($result)) {
-        $biedingen[] = $row;
-    }
-    mysqli_stmt_close($stmt);
+// Haal alle biedingen op die gekoppeld zijn aan de ingelogde gebruiker.
+$sql = 'SELECT b.bod_bedrag, b.bericht, b.aangemaakt_op, b.status,
+               p.id AS product_id, p.naam AS product_naam
+          FROM biedingen b
+          JOIN producten p ON p.id = b.product_id
+         WHERE b.gebruiker_id = ?
+         ORDER BY b.aangemaakt_op DESC';
+$stmt = mysqli_prepare($conn, $sql);
+mysqli_stmt_bind_param($stmt, 'i', $ingelogde['id']);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+while ($row = mysqli_fetch_assoc($result)) {
+    $biedingen[] = $row;
 }
+mysqli_stmt_close($stmt);
 
 $page_title = 'Mijn biedingen — Wealth Creators';
 require_once __DIR__ . '/includes/header.php';
@@ -35,31 +34,17 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container" style="max-width: 900px;">
         <div class="section__head">
             <span class="eyebrow">Mijn biedingen</span>
-            <h2>Bekijk uw biedingen</h2>
-            <p>Vul het e-mailadres in waarmee u uw bod(en) heeft geplaatst.</p>
+            <h2>Uw biedingen</h2>
+            <p>Een overzicht van alle biedingen die u heeft geplaatst, <?php echo htmlspecialchars($ingelogde['naam']); ?>.</p>
         </div>
 
-        <!-- Zoekformulier: stuurt het e-mailadres via GET naar deze pagina -->
-        <form class="form" method="get" action="berichten.php" style="max-width: 520px; margin: 0 auto 40px;">
-            <div class="form__group">
-                <label for="email">E-mailadres</label>
-                <input type="email" id="email" name="email" maxlength="150"
-                       value="<?php echo htmlspecialchars($email); ?>"
-                       placeholder="naam@voorbeeld.nl" required>
-            </div>
-            <button type="submit" class="btn btn--primary">Zoek mijn biedingen</button>
-        </form>
-
-        <?php if ($gezocht && !$geldig_email): ?>
-            <div class="alert alert--error">
-                Vul een geldig e-mailadres in om uw biedingen te bekijken.
-            </div>
-        <?php elseif ($gezocht && empty($biedingen)): ?>
+        <?php if (empty($biedingen)): ?>
             <div class="empty-state">
-                <h3>Geen biedingen gevonden</h3>
-                <p>Er zijn geen biedingen gevonden voor <strong><?php echo htmlspecialchars($email); ?></strong>.</p>
+                <h3>Nog geen biedingen</h3>
+                <p>U heeft nog geen biedingen geplaatst. Bekijk de collectie en plaats uw eerste bod.</p>
+                <a href="overzicht.php" class="btn btn--ghost" style="margin-top: 20px;">Bekijk de collectie</a>
             </div>
-        <?php elseif (!empty($biedingen)): ?>
+        <?php else: ?>
             <table class="bids-table">
                 <thead>
                     <tr>

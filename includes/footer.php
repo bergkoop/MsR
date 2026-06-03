@@ -9,7 +9,13 @@
             <nav class="site-footer__nav">
                 <a href="index.php">Home</a>
                 <a href="overzicht.php">Overzicht</a>
-                <a href="berichten.php">Mijn biedingen</a>
+                <?php if (is_ingelogd()): ?>
+                    <a href="berichten.php">Mijn biedingen</a>
+                    <a href="uitloggen.php">Uitloggen</a>
+                <?php else: ?>
+                    <a href="inloggen.php">Inloggen</a>
+                    <a href="registreren.php">Registreren</a>
+                <?php endif; ?>
             </nav>
             <p class="site-footer__copy">
                 &copy; <?php echo date('Y'); ?> Wealth Creators &middot; Projectnummer 2023#004

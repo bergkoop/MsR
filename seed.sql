@@ -5,6 +5,11 @@
 
 USE `wealth_creators`;
 
+-- Demo-gebruiker (wachtwoord: Welkom123!)
+-- Hash gegenereerd met password_hash('Welkom123!', PASSWORD_DEFAULT).
+INSERT INTO `gebruikers` (`naam`, `email`, `wachtwoord_hash`) VALUES
+('James Sterling', 'james@example.com', '$2y$12$Q2eYHGtkc1UtH4bLkJ0dN.9BIbOkr0rUQjFh7H9i5yJxLgmJAyb6C');
+
 -- Categorieën
 INSERT INTO `categorieen` (`naam`, `beschrijving`, `afbeelding_url`) VALUES
 ('Supercars',   'Zeldzame hypercars en limited editions.',          'https://picsum.photos/seed/supercars/800/600'),
@@ -54,11 +59,12 @@ INSERT INTO `product_afbeeldingen`
 (7, 'https://picsum.photos/seed/diamond1/1200/800', 1, 0);
 
 -- Voorbeeldbiedingen (zodat berichten.php meteen iets toont)
+-- James (gebruiker_id=1) heeft twee biedingen; Olivia is een anonieme bezoeker (NULL).
 INSERT INTO `biedingen`
-    (`product_id`, `naam`, `email`, `bod_bedrag`, `bericht`, `status`) VALUES
-(1, 'James Sterling', 'james@example.com', 9800000.00,
+    (`product_id`, `gebruiker_id`, `naam`, `email`, `bod_bedrag`, `bericht`, `status`) VALUES
+(1, 1, 'James Sterling', 'james@example.com', 9800000.00,
     'Ik ben zeer geïnteresseerd in dit unieke exemplaar. Graag contact.', 'nieuw'),
-(6, 'James Sterling', 'james@example.com', 2500000.00,
+(6, 1, 'James Sterling', 'james@example.com', 2500000.00,
     'Prachtig uurwerk. Is een bezichtiging in Genève mogelijk?', 'gelezen'),
-(3, 'Olivia Chen',    'olivia@example.com', 8200000.00,
+(3, NULL, 'Olivia Chen', 'olivia@example.com', 8200000.00,
     'Het elektrische aspect spreekt mij erg aan. Ik wil graag een bod doen.', 'nieuw');

@@ -11,7 +11,8 @@ Read this before writing any code or giving any advice.
 A luxury marketplace website built for the fictional client "Wealth Creators".
 Visitors can browse exclusive products (supercars, yachts, helicopters, watches, jewellery),
 view individual showcase pages, and submit bids via a contact form.
-Bids are stored in a database and visible on a personal bids page per email address.
+Users must register and log in to place bids. Bids are stored in a database and visible
+on a personal bids page for the logged-in user.
 
 ---
 
@@ -49,13 +50,17 @@ Bids are stored in a database and visible on a personal bids page per email addr
 ├── index.php                  # Homepage
 ├── overzicht.php              # Product overview with category filter
 ├── showcase.php               # Single product page (?id=X)
-├── berichten.php              # Bids overview (lookup by email)
-├── verwerk_bod.php            # Handles bid form submission (no UI)
+├── berichten.php              # Bids overview (login required)
+├── verwerk_bod.php            # Handles bid form submission (no UI, login required)
+├── registreren.php            # User registration form
+├── inloggen.php               # Login form
+├── uitloggen.php              # Destroys session, redirects to homepage
 ├── config.php                 # DB credentials (never commit this)
 ├── includes/
 │   ├── header.php             # Shared nav + <head>
 │   ├── footer.php             # Shared footer
-│   └── db.php                 # mysqli connection (included via config.php)
+│   ├── db.php                 # mysqli connection (included via config.php)
+│   └── auth.php               # Session helpers: is_ingelogd(), huidige_gebruiker(), vereis_login()
 ├── assets/
 │   ├── css/
 │   │   └── style.css          # Main stylesheet
@@ -103,10 +108,20 @@ is_hoofdafbeelding TINYINT(1)  DEFAULT 0
 volgorde          INT          DEFAULT 0
 ```
 
+**gebruikers**
+```sql
+id              INT          PK AUTO_INCREMENT
+naam            VARCHAR(100) NOT NULL
+email           VARCHAR(150) NOT NULL UNIQUE
+wachtwoord_hash VARCHAR(255) NOT NULL   -- password_hash(), never plain text
+aangemaakt_op   DATETIME     DEFAULT NOW()
+```
+
 **biedingen**
 ```sql
 id              INT          PK AUTO_INCREMENT
 product_id      INT          FK → producten.id
+gebruiker_id    INT          FK → gebruikers.id (nullable — old/seed bids have NULL)
 naam            VARCHAR(100) NOT NULL
 email           VARCHAR(150) NOT NULL
 bod_bedrag      DECIMAL(15,2) NOT NULL
@@ -115,21 +130,26 @@ aangemaakt_op   DATETIME     DEFAULT NOW()
 status          ENUM('nieuw','gelezen','beantwoord') DEFAULT 'nieuw'
 ```
 
-### Key rule
-`bod_bedrag` must always be >= `minimaal_bod` of the related product.
-Enforce this in BOTH JavaScript (before submit) and PHP (before INSERT).
+### Key rules
+- `bod_bedrag` must always be >= `minimaal_bod` of the related product.
+  Enforce this in BOTH JavaScript (before submit) and PHP (before INSERT).
+- Bidding requires login. `verwerk_bod.php` calls `vereis_login()` at the top.
+  `gebruiker_id`, `naam`, and `email` are taken from `huidige_gebruiker()`, not POST.
 
 ---
 
 ## Pages
 
-| File              | Route                  | Description                                      |
-|-------------------|------------------------|--------------------------------------------------|
-| index.php         | /                      | Homepage: hero, categories, featured products    |
-| overzicht.php     | /overzicht.php         | All products, filterable by category             |
-| showcase.php      | /showcase.php?id=X     | Single product: gallery, specs, bid form         |
-| berichten.php     | /berichten.php         | Bid history looked up by email (no login needed) |
-| verwerk_bod.php   | POST only              | Validates + saves bid, then redirects            |
+| File              | Route                  | Description                                                  |
+|-------------------|------------------------|--------------------------------------------------------------|
+| index.php         | /                      | Homepage: hero, categories, featured products                |
+| overzicht.php     | /overzicht.php         | All products, filterable by category                         |
+| showcase.php      | /showcase.php?id=X     | Single product: gallery, specs, bid form (login required)    |
+| berichten.php     | /berichten.php         | Personal bid history for logged-in user (login required)     |
+| verwerk_bod.php   | POST only              | Validates + saves bid, then redirects (login required)       |
+| registreren.php   | /registreren.php       | Registration form: name, email, password                     |
+| inloggen.php      | /inloggen.php          | Login form; supports ?retour= for post-login redirect        |
+| uitloggen.php     | /uitloggen.php         | Destroys session, redirects to homepage                      |
 
 ---
 
@@ -161,7 +181,6 @@ Enforce this in BOTH JavaScript (before submit) and PHP (before INSERT).
 - `config.php` must never be committed to GitHub — add it to `.gitignore`
 ---
 ## maybe's
-- User login / accounts / passwords
 - Email notifications
 ---
 
@@ -178,10 +197,11 @@ Enforce this in BOTH JavaScript (before submit) and PHP (before INSERT).
 - [x] Projectplan written
 - [x] Moodboard made
 - [x] Wireframes made
-- [ ] Database created
-- [ ] PHP structure set up
-- [ ] Homepage built
-- [ ] Overview page built
-- [ ] Showcase page built
-- [ ] Bids page built
+- [x] Database created
+- [x] PHP structure set up
+- [x] Homepage built
+- [x] Overview page built
+- [x] Showcase page built
+- [x] Bids page built
+- [x] User accounts (register / login / logout)
 - [ ] Tested + uploaded to FTP

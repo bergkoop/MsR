@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initCategoryFilter();
     initGallery();
     initBidForm();
+    initAuthForms();
 });
 
 // Toont/verbergt het navigatiemenu op mobiel.
@@ -91,6 +92,7 @@ function initGallery() {
 
 // Valideert het biedformulier vóór verzenden. De server (verwerk_bod.php)
 // valideert dezelfde regels nogmaals — client-side validatie alleen is niet genoeg.
+// Naam en e-mail komen nu uit het account; alleen bod en bericht worden gevalideerd.
 function initBidForm() {
     const form = document.getElementById('bidForm');
     if (!form) {
@@ -114,23 +116,6 @@ function initBidForm() {
 
     form.addEventListener('submit', function (event) {
         let valid = true;
-
-        // Naam: verplicht, 2 t/m 100 tekens.
-        const naam = form.elements['naam'].value.trim();
-        if (naam.length < 2 || naam.length > 100) {
-            valid = setError('naam', 'Vul een naam in van 2 tot 100 tekens.') && valid;
-        } else {
-            setError('naam', '');
-        }
-
-        // E-mail: verplicht en geldig formaat.
-        const email = form.elements['email'].value.trim();
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            valid = setError('email', 'Vul een geldig e-mailadres in.') && valid;
-        } else {
-            setError('email', '');
-        }
 
         // Bod: verplicht, numeriek en >= minimaal bod.
         const bod = parseFloat(form.elements['bod_bedrag'].value);
@@ -156,4 +141,90 @@ function initBidForm() {
             event.preventDefault();
         }
     });
+}
+
+// Valideert de registratie- en loginformulieren vóór verzenden.
+// De server valideert dezelfde regels nogmaals.
+function initAuthForms() {
+
+    // Hulpfunctie: toont of wist een foutmelding bij een veld in een formulier.
+    function setFieldError(form, fieldId, message) {
+        const input = document.getElementById(fieldId);
+        const box = input ? input.parentElement.querySelector('.field-error') : null;
+        if (box) {
+            box.textContent = message;
+        }
+        if (input) {
+            input.classList.toggle('is-invalid', message !== '');
+        }
+        return message === '';
+    }
+
+    // Registratieformulier.
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', function (event) {
+            let valid = true;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            const naam = document.getElementById('naam').value.trim();
+            if (naam.length < 2 || naam.length > 100) {
+                valid = setFieldError(registerForm, 'naam', 'Vul een naam in van 2 tot 100 tekens.') && valid;
+            } else {
+                setFieldError(registerForm, 'naam', '');
+            }
+
+            const email = document.getElementById('email').value.trim();
+            if (!emailRegex.test(email)) {
+                valid = setFieldError(registerForm, 'email', 'Vul een geldig e-mailadres in.') && valid;
+            } else {
+                setFieldError(registerForm, 'email', '');
+            }
+
+            const wachtwoord = document.getElementById('wachtwoord').value;
+            if (wachtwoord.length < 8) {
+                valid = setFieldError(registerForm, 'wachtwoord', 'Uw wachtwoord moet minimaal 8 tekens bevatten.') && valid;
+            } else {
+                setFieldError(registerForm, 'wachtwoord', '');
+            }
+
+            const herhaling = document.getElementById('herhaling').value;
+            if (herhaling !== wachtwoord) {
+                valid = setFieldError(registerForm, 'herhaling', 'De wachtwoorden komen niet overeen.') && valid;
+            } else {
+                setFieldError(registerForm, 'herhaling', '');
+            }
+
+            if (!valid) {
+                event.preventDefault();
+            }
+        });
+    }
+
+    // Loginformulier: basisvalidatie (de server doet de echte controle).
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function (event) {
+            let valid = true;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            const email = document.getElementById('email').value.trim();
+            if (!emailRegex.test(email)) {
+                valid = setFieldError(loginForm, 'email', 'Vul een geldig e-mailadres in.') && valid;
+            } else {
+                setFieldError(loginForm, 'email', '');
+            }
+
+            const wachtwoord = document.getElementById('wachtwoord').value;
+            if (wachtwoord.length === 0) {
+                valid = setFieldError(loginForm, 'wachtwoord', 'Vul uw wachtwoord in.') && valid;
+            } else {
+                setFieldError(loginForm, 'wachtwoord', '');
+            }
+
+            if (!valid) {
+                event.preventDefault();
+            }
+        });
+    }
 }

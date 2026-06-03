@@ -123,57 +123,75 @@ require_once __DIR__ . '/includes/header.php';
 <!-- Biedformulier -->
 <section class="section" id="bod-form" style="padding-top: 20px;">
     <div class="container" style="max-width: 720px;">
-        <?php if ($flash === 'succes'): ?>
-            <div class="alert alert--success">
-                Bedankt! Uw bod is ontvangen. U vindt het terug op de pagina
-                <a href="berichten.php" style="text-decoration: underline;">Mijn biedingen</a>.
-            </div>
-        <?php elseif ($flash === 'te-laag'): ?>
-            <div class="alert alert--error">
-                Uw bod is lager dan het minimale bod. Plaats een hoger bod.
-            </div>
-        <?php elseif ($flash === 'ongeldig'): ?>
-            <div class="alert alert--error">
-                Niet alle velden zijn correct ingevuld. Controleer uw gegevens en probeer het opnieuw.
+
+        <?php if (is_ingelogd()):
+            // Haal de ingelogde gebruiker op voor de naam/e-mail weergave.
+            $ingelogde = huidige_gebruiker();
+        ?>
+            <?php if ($flash === 'succes'): ?>
+                <div class="alert alert--success">
+                    Bedankt! Uw bod is ontvangen. U vindt het terug op de pagina
+                    <a href="berichten.php" style="text-decoration: underline;">Mijn biedingen</a>.
+                </div>
+            <?php elseif ($flash === 'te-laag'): ?>
+                <div class="alert alert--error">
+                    Uw bod is lager dan het minimale bod. Plaats een hoger bod.
+                </div>
+            <?php elseif ($flash === 'ongeldig'): ?>
+                <div class="alert alert--error">
+                    Niet alle velden zijn correct ingevuld. Controleer uw gegevens en probeer het opnieuw.
+                </div>
+            <?php endif; ?>
+
+            <form class="form" action="verwerk_bod.php" method="post" id="bidForm"
+                  data-minimaal-bod="<?php echo (float) $product['minimaal_bod']; ?>">
+                <h3>Plaats uw bod</h3>
+
+                <!-- Verborgen veld: koppelt het bod aan dit product -->
+                <input type="hidden" name="product_id" value="<?php echo (int) $product['id']; ?>">
+
+                <!-- Naam en e-mail komen uit het account; toon ze als bevestiging -->
+                <div class="form__group">
+                    <label>Naam</label>
+                    <input type="text" value="<?php echo htmlspecialchars($ingelogde['naam']); ?>"
+                           disabled style="opacity: 0.6;">
+                </div>
+
+                <div class="form__group">
+                    <label>E-mailadres</label>
+                    <input type="email" value="<?php echo htmlspecialchars($ingelogde['email']); ?>"
+                           disabled style="opacity: 0.6;">
+                </div>
+
+                <div class="form__group">
+                    <label for="bod_bedrag">Uw bod (in euro)</label>
+                    <input type="number" id="bod_bedrag" name="bod_bedrag"
+                           min="<?php echo (float) $product['minimaal_bod']; ?>" step="0.01" required>
+                    <div class="field-error" data-error-for="bod_bedrag"></div>
+                </div>
+
+                <div class="form__group">
+                    <label for="bericht">Bericht</label>
+                    <textarea id="bericht" name="bericht" minlength="10" required></textarea>
+                    <div class="field-error" data-error-for="bericht"></div>
+                </div>
+
+                <button type="submit" class="btn btn--primary">Verstuur bod</button>
+            </form>
+
+        <?php else: ?>
+            <!-- Gast: toon een uitnodiging om in te loggen -->
+            <div class="login-gate">
+                <h3>Bod plaatsen</h3>
+                <p>U moet ingelogd zijn om een bod te kunnen plaatsen op dit object.</p>
+                <div class="login-gate__actions">
+                    <a href="inloggen.php?retour=<?php echo urlencode('showcase.php?id=' . (int) $product['id']); ?>"
+                       class="btn btn--primary">Inloggen</a>
+                    <a href="registreren.php" class="btn btn--ghost">Account aanmaken</a>
+                </div>
             </div>
         <?php endif; ?>
 
-        <form class="form" action="verwerk_bod.php" method="post" id="bidForm"
-              data-minimaal-bod="<?php echo (float) $product['minimaal_bod']; ?>">
-            <h3>Plaats uw bod</h3>
-
-            <!-- Verborgen veld: koppelt het bod aan dit product -->
-            <input type="hidden" name="product_id" value="<?php echo (int) $product['id']; ?>">
-
-            <div class="form__group">
-                <label for="naam">Naam</label>
-                <input type="text" id="naam" name="naam" maxlength="100"
-                       value="<?php echo isset($_GET['naam']) ? htmlspecialchars($_GET['naam']) : ''; ?>" required>
-                <div class="field-error" data-error-for="naam"></div>
-            </div>
-
-            <div class="form__group">
-                <label for="email">E-mailadres</label>
-                <input type="email" id="email" name="email" maxlength="150"
-                       value="<?php echo isset($_GET['email']) ? htmlspecialchars($_GET['email']) : ''; ?>" required>
-                <div class="field-error" data-error-for="email"></div>
-            </div>
-
-            <div class="form__group">
-                <label for="bod_bedrag">Uw bod (in euro)</label>
-                <input type="number" id="bod_bedrag" name="bod_bedrag"
-                       min="<?php echo (float) $product['minimaal_bod']; ?>" step="0.01" required>
-                <div class="field-error" data-error-for="bod_bedrag"></div>
-            </div>
-
-            <div class="form__group">
-                <label for="bericht">Bericht</label>
-                <textarea id="bericht" name="bericht" minlength="10" required></textarea>
-                <div class="field-error" data-error-for="bericht"></div>
-            </div>
-
-            <button type="submit" class="btn btn--primary">Verstuur bod</button>
-        </form>
     </div>
 </section>
 

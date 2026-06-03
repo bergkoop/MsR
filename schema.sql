@@ -14,6 +14,19 @@ DROP TABLE IF EXISTS `biedingen`;
 DROP TABLE IF EXISTS `product_afbeeldingen`;
 DROP TABLE IF EXISTS `producten`;
 DROP TABLE IF EXISTS `categorieen`;
+DROP TABLE IF EXISTS `gebruikers`;
+
+-- Tabel: gebruikers
+-- Geregistreerde accounts. Wachtwoorden worden opgeslagen als password_hash() — nooit plain text.
+CREATE TABLE `gebruikers` (
+    `id`              INT          NOT NULL AUTO_INCREMENT,
+    `naam`            VARCHAR(100) NOT NULL,
+    `email`           VARCHAR(150) NOT NULL,
+    `wachtwoord_hash` VARCHAR(255) NOT NULL,
+    `aangemaakt_op`   DATETIME     NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabel: categorieen
 -- Productcategorieën zoals supercars, jachten, helikopters, horloges, juwelen.
@@ -66,6 +79,7 @@ CREATE TABLE `product_afbeeldingen` (
 CREATE TABLE `biedingen` (
     `id`            INT           NOT NULL AUTO_INCREMENT,
     `product_id`    INT           NOT NULL,
+    `gebruiker_id`  INT           NULL,
     `naam`          VARCHAR(100)  NOT NULL,
     `email`         VARCHAR(150)  NOT NULL,
     `bod_bedrag`    DECIMAL(15,2) NOT NULL,
@@ -74,8 +88,12 @@ CREATE TABLE `biedingen` (
     `status`        ENUM('nieuw','gelezen','beantwoord') NOT NULL DEFAULT 'nieuw',
     PRIMARY KEY (`id`),
     KEY `idx_bieding_product_id` (`product_id`),
+    KEY `idx_bieding_gebruiker_id` (`gebruiker_id`),
     KEY `idx_bieding_email` (`email`),
     CONSTRAINT `fk_bieding_product`
         FOREIGN KEY (`product_id`) REFERENCES `producten` (`id`)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_bieding_gebruiker`
+        FOREIGN KEY (`gebruiker_id`) REFERENCES `gebruikers` (`id`)
+        ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
